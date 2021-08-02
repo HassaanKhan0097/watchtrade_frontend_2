@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 // return the user data from the session storage
 export const getUser = () => {
     const userStr = localStorage.getItem('user');
@@ -21,3 +23,12 @@ export const setUserSession = (data) => {
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
 }
+
+
+
+export default axios.create({
+    headers: {
+        'Content-Type'  : 'application/x-www-form-urlencoded',
+        'Authorization' : 'Bearer '+localStorage.getItem("token")
+    }
+});

@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 
 // window.$base_api = 'https://watchtrade-api.herokuapp.com'
 // window.$base_api = 'http://localhost:5000'
-window.$base_api = 'https://amalgamanalyticsllc.herokuapp.com'
+window.$base_api = 'https://watchtradebackend.herokuapp.com'
 
 
 

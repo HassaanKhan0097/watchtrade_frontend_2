@@ -5,6 +5,10 @@ import axios 				from 'axios'
 import qs    				from 'qs';
 
 import "./assets/css/bootstrap.min.css"
+// import "./assets/js/vendor/jquery-1.12.4.min.js"
+import 'bootstrap/dist/js/bootstrap.js';
+// import "./assets/js/popper.min.js"
+// import "./assets/js/bootstrap.min.js"
 import "./assets/css/icons.min.css"
 import "./assets/css/plugins.css"
 // import "./assets/css/plugins.css"
@@ -38,6 +42,7 @@ const WebLayout = ({ children }) => {
 
 	const [registerFirstname, setRegisterFirstname] = useState("");
 	const [registerLastname, setRegisterLastname] = useState("");
+	const [registerUsername, setRegisterUsername] = useState("");
 	const [registerEmail, setRegisterEmail] = useState("");
 	const [registerPassword, setRegisterPassword] = useState("");
 	const [registerError, setRegisterError] = useState(false);
@@ -87,6 +92,7 @@ const WebLayout = ({ children }) => {
 		var data = JSON.stringify({
 			'firstName': registerFirstname,
 			'lastName': registerLastname,
+			'userName': registerUsername,
 			'email': registerEmail,
 			'password': registerPassword,
 			'mobileNo': Math.floor(Math.random() * 100000000) //Need to change
@@ -321,6 +327,9 @@ const WebLayout = ({ children }) => {
 							</div>
 							<div className="form-group mt-20">
 								<input type="text" className="form-control login-email" onChange={(e) => setRegisterLastname(e.target.value)} placeholder="Lastname" />
+							</div>
+							<div className="form-group mt-20">
+								<input type="text" className="form-control login-email" onChange={(e) => setRegisterUsername(e.target.value)} placeholder="Username" />
 							</div>
 							<input type="text" className="form-control login-email" onChange={(e) => setRegisterEmail(e.target.value)} placeholder="Email Address" />
 							<div className="form-group mt-20">

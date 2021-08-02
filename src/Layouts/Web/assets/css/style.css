@@ -9062,6 +9062,9 @@ color: black !important;
   background: #2E2E2E !important;
   color: white !important;
 }
+.disabled-btn{
+  background: #E6E6E6 !important;
+}
 .learn-more{
   cursor: pointer !important;
   background: #707070 !important;
@@ -9356,7 +9359,7 @@ li.active.text-center {
 .bid-history{
   padding-top: 20px;
   padding-bottom: 0px;
-  padding-left: 0px;
+  padding-left: 20px;
   background-color: #FFFFFF;
 }
 /* Scroll Bar */
@@ -9747,4 +9750,25 @@ width: 100% !important;
 }
 .h-700{
   height: 700px !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 31st July 2021*/
+.product-detail-img {
+  margin: auto;
+  display: block;
+  width: 450px;
+  height: 450px;
+  object-fit: scale-down;
 }
