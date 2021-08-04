@@ -4,9 +4,14 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-// window.$base_api = 'https://watchtrade-api.herokuapp.com'
+//BACKEND URL
 // window.$base_api = 'http://localhost:5000'
 window.$base_api = 'https://watchtradebackend.herokuapp.com'
+
+
+//ADMIN URL
+// window.$admin_api = 'http://localhost:3006'
+window.$admin_api = 'https://watchtradeadmin.herokuapp.com/'
 
 
 

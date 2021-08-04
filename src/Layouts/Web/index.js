@@ -1,5 +1,5 @@
 import React, { useState } 	from "react"; //useEffect
-import { Route } 			from 'react-router-dom';  
+import { Route, Link  } 			from 'react-router-dom';  
 import { Modal, Button } 	from 'react-bootstrap';
 import axios 				from 'axios'
 import qs    				from 'qs';
@@ -13,7 +13,7 @@ import "./assets/css/icons.min.css"
 import "./assets/css/plugins.css"
 // import "./assets/css/plugins.css"
 import "./assets/css/style.css"
-import { setUserSession,getToken,removeUserSession } from '../../Utils/Common';
+import { setUserSession,getToken,removeUserSession,isAdmin } from '../../Utils/Common';
 
 
 const WebLayout = ({ children }) => {
@@ -46,6 +46,13 @@ const WebLayout = ({ children }) => {
 	const [registerEmail, setRegisterEmail] = useState("");
 	const [registerPassword, setRegisterPassword] = useState("");
 	const [registerError, setRegisterError] = useState(false);
+
+
+	const handleRedirectToAdmin = (e) =>{ 
+		e.preventDefault();
+
+		window.open(window.$admin_api+"/login/"+getToken(), '_blank');
+	};
 
 	
 	
@@ -127,6 +134,7 @@ const WebLayout = ({ children }) => {
 
     // this.state = { value: 'Hello World' };
 	const isLoggedIn = getToken();
+	const isLoggedUserAdmin = isAdmin();
 	return (                         
 	<>
     	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
@@ -150,6 +158,11 @@ const WebLayout = ({ children }) => {
 								{
 									isLoggedIn == null &&
 									<li onClick={handleRegisterShow}><a href="#"> Register </a></li>
+								}
+
+								{
+									isLoggedUserAdmin &&
+									<li onClick={handleRedirectToAdmin}><Link> Administration </Link ></li>
 								}
 								
 								{ isLoggedIn == null ?

@@ -25,6 +25,17 @@ export const setUserSession = (data) => {
 }
 
 
+// return if logged user is admin
+export const isAdmin = () => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+        let loggedUser = JSON.parse(userStr);
+        if(loggedUser.userType == "admin" || loggedUser.userType == "both") { return true; } else { return false; }
+    }
+    else return null;
+}
+
+
 
 export default axios.create({
     headers: {
