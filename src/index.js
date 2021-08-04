@@ -11,7 +11,7 @@ window.$base_api = 'https://watchtradebackend.herokuapp.com'
 
 //ADMIN URL
 // window.$admin_api = 'http://localhost:3006'
-window.$admin_api = 'https://watchtradeadmin.herokuapp.com/'
+window.$admin_api = 'https://watchtradeadmin.herokuapp.com'
 
 
 
