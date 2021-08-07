@@ -43,3 +43,44 @@ export default axios.create({
         'Authorization' : 'Bearer '+localStorage.getItem("token")
     }
 });
+
+
+
+
+
+
+
+
+// Utils
+export const calculateTimeLeft = (auctionExpireAt) => {
+
+    // get total seconds between the times
+    var delta = Math.abs(new Date(auctionExpireAt) - new Date()) / 1000;
+    //1629412325929
+
+    // calculate (and subtract) whole days
+    var days = Math.floor(delta / 86400);
+    delta -= days * 86400;
+
+    // calculate (and subtract) whole hours
+    var hours = Math.floor(delta / 3600) % 24;
+    delta -= hours * 3600;
+
+    // calculate (and subtract) whole minutes
+    var minutes = Math.floor(delta / 60) % 60;
+    delta -= minutes * 60;
+
+    // what's left is seconds
+    var seconds = Math.floor(delta % 60);  // in theory the modulus is not required
+
+    var formattedHours = (hours < 10) ? "0"+hours : hours;
+    var formattedMinutes = (minutes < 10) ? "0"+minutes : minutes;
+    var formattedSeconds = (seconds < 10) ? "0"+seconds : seconds;
+
+    if(days < 1 && hours < 60) { return formattedHours + ":" + formattedMinutes + ":" + formattedSeconds } else { return days + " days" }
+    // return  formattedHours + ":" + formattedMinutes + ":" + formattedSeconds;
+
+}
+
+
+

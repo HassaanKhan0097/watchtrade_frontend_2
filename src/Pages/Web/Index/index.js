@@ -1,5 +1,6 @@
 import React from 'react';  
 import { Link } from 'react-router-dom';
+import { calculateTimeLeft } from 'Utils/Common';
   class IndexPage extends React.Component {
       constructor(props)
       {
@@ -78,7 +79,9 @@ import { Link } from 'react-router-dom';
                                       <option value="#">Sold</option>
                                   </select>
                               </div>
+
                                 {products.map((product, index) => (  
+                                    // console.log(product.bidHistory[product.bidHistory.length-1].bidAmount)
                                     <div  key={"product"+index} className="col-xl-3 col-md-3 col-lg-3 col-sm-6 mb-2">
                                         <div>
                                             <h3 className="index-title"><a href="#">{product.brand}</a></h3>
@@ -96,23 +99,23 @@ import { Link } from 'react-router-dom';
                                                     <img className="hover-img" src={product.images[1]} alt=""/>
                                                 
                                                 </Link>
-                                                <span className="pink">{product.auctionExpireAt}</span>
+                                                <span className="pink">{ calculateTimeLeft(product.auctionExpireAt) }</span>
                                                 <div className="product-action">
-                                                    <div className="pro-same-action pro-wishlist">
+                                                    {/* <div className="pro-same-action pro-wishlist">
                                                         <a title="Wishlist" href="wishlist.html"><i className="pe-7s-like"></i></a>
-                                                    </div>
+                                                    </div> */}
                                                     <div className="pro-same-action pro-cart">
-                                                        <a title="Add To Cart" href="#"><i className="pe-7s-cart"></i> Add to cart</a>
+                                                        <a title="Add To Cart" href="#"><i className="pe-7s-plus"></i> Add to watchlist</a>
                                                     </div>
-                                                    <div className="pro-same-action pro-quickview">
+                                                    {/* <div className="pro-same-action pro-quickview">
                                                         <a title="Quick View" href="#" data-toggle="modal"
                                                             data-target="#exampleModal"><i className="pe-7s-look"></i></a>
-                                                    </div>
+                                                    </div> */}
                                                 </div>
                                             </div>
                                             <div className="product-content">
                                                 <div className="product-price">
-                                                    <span>$ {product.startingPrice}</span> <span className="price-circle">45</span>
+                                                    <span>${ (product.bidHistory.length > 0) ? (product.bidHistory[product.bidHistory.length-1].bidAmount) : (product.startingPrice) }</span> <span className="price-circle">45</span>
                                                 </div>
                                             </div>
                                         </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios'
-import { getUser } from 'Utils/Common';
+import { getUser, calculateTimeLeft } from 'Utils/Common';
 import { Button } from 'bootstrap';
 // import Axios from '../../../Utils/Common';
 
@@ -65,8 +65,11 @@ class ProductsPage extends React.Component {
       PlaceBidError: false,
       BtnPlaceBidDisabled: false,
       bidHistory: [],
+
+      errors: {}
     }
   }
+
   componentDidMount() {
     // Simple GET request using fetch
     fetch(window.$base_api + '/web/products/?_id='+this.props.match.params._id)
@@ -101,38 +104,10 @@ class ProductsPage extends React.Component {
     }
   }
 
-  calculateTimeLeft(){
-
-    // get total seconds between the times
-    var delta = Math.abs(new Date(1628404493002) - new Date()) / 1000;
-
-    // calculate (and subtract) whole days
-    var days = Math.floor(delta / 86400);
-    delta -= days * 86400;
-
-    // calculate (and subtract) whole hours
-    var hours = Math.floor(delta / 3600) % 24;
-    delta -= hours * 3600;
-
-    // calculate (and subtract) whole minutes
-    var minutes = Math.floor(delta / 60) % 60;
-    delta -= minutes * 60;
-
-    // what's left is seconds
-    var seconds = Math.floor(delta % 60);  // in theory the modulus is not required
-
-    var formattedHours = (hours < 10) ? "0"+hours : hours;
-    var formattedMinutes = (minutes < 10) ? "0"+minutes : minutes;
-    var formattedSeconds = (seconds < 10) ? "0"+seconds : seconds;
-
-    if(days < 1 && hours < 60) { return formattedHours + ":" + formattedMinutes + ":" + formattedSeconds } else { return days + " days" }
-    // return  formattedHours + ":" + formattedMinutes + ":" + formattedSeconds;
-
-  }
-
   handlePlaceBid = () => {
 
     console.log("handlePlaceBid")
+    if(!this.handleValidation()){return}
 
 		var data = JSON.stringify({
 			'bidAmount': this.state.BidAmount,
@@ -168,35 +143,27 @@ class ProductsPage extends React.Component {
 			that.setState({PlaceBidError: true})
 		});
 
+  }
 
 
+  handleValidation(){ 
 
+    let errors = {};
+    let bidAmount = this.state.BidAmount;
+    let isValid = true;
 
-    // let that = this;
-    // Axios.post(window.$base_api+'/products/addbids', {data: data})
-    // .then(async response => {
-      
-    //   console.log("bid place success-->",response.data);
-		// 	if(!response.data.hasOwnProperty("success"))
-		// 	{
-		// 		window.location.reload()
-		// 	} else {
-		// 		that.setState({PlaceBidError: true})
-		// 	}
-    // })
-    // .catch(error => {
+    if( (bidAmount - this.state.product[0].bidHistory[0].bidAmount) < 50 ){
+      errors["bidAmount"] = "Bid must be greater than or equal to 50!";
+      isValid = false;
+    }
 
-    //   console.log("bid place failed-->",error);
-    //   that.setState({PlaceBidError: true})
-
-    // });
-
+    this.setState({errors: errors});
+    return isValid;
   }
 
   
   render() {
-    var { product, PlaceBidError, BtnPlaceBidDisabled, bidHistory } = this.state;
-
+    var { product, PlaceBidError, BtnPlaceBidDisabled, bidHistory, errors } = this.state;
     //First product retreived & bidHistory
     if(product.length  == 0){
       return (<div></div>)
@@ -264,18 +231,22 @@ class ProductsPage extends React.Component {
                       </div>
                       <div class="col-md-6 pl-40">
                         {/* <h3 class="fw-400 m-auto">{this.calculateTimeLeft(product[0].auctionExpireAt, new Date())}</h3> */}
-                        <h3 class="fw-400 m-auto">{this.calculateTimeLeft(product[0].auctionExpireAt, new Date())}</h3>
+                        <h3 class="fw-400 m-auto">{calculateTimeLeft(product[0].auctionExpireAt)}</h3>
                         <p class="fs-12">Time Left</p>
                       </div>
                       <div class="col-md-12 mt-20">
                         <form action="#">
-                          <input type="text" class="acc-input bg-white" onChange={(e) => this.setState({BidAmount: e.target.value})} placeholder={(bidHistory.length > 0) ? ("$"+ bidHistory[0].bidAmount +" or more") : ("$"+ product[0].startingPrice +" or more")} />
+                          <input type="number" class="acc-input bg-white" onChange={(e) => this.setState({BidAmount: e.target.value})} placeholder={(bidHistory.length > 0) ? ("$"+ (bidHistory[0].bidAmount+50) +" or more") : ("$"+ (product[0].startingPrice+50) +" or more")} />
                           
                           { (BtnPlaceBidDisabled) ? (<input className="acc-profile-btn-one mt-10 disabled-btn" disabled type="button" onClick={this.handlePlaceBid} value="Place a Bid" />) : (<input className="acc-profile-btn-one mt-10"  type="button" onClick={this.handlePlaceBid} value="Place a Bid" />) }
                           
 
                           { PlaceBidError ? <div className="alert alert-danger mt-15" role="alert">
                             <i className="fa fa-exclamation-circle"></i> Bid Placement Failed! 
+                          </div> : null }
+
+                          { Object.keys(errors).length > 0 ? <div className="alert alert-danger mt-15" role="alert">
+                            <i className="fa fa-exclamation-circle"></i> {errors["bidAmount"]} 
                           </div> : null }
 
                           <input class="acc-profile-btn-two mt-10" type="button" value="+ Add to Watchlist" />
@@ -305,7 +276,7 @@ class ProductsPage extends React.Component {
                           <li>
                             <ul class="ds-flex">
                               <li>Age:</li>
-                              <li>since {Math.abs(new Date(Number(product[0].watchAge)).getFullYear())} ({Math.abs(new Date(Number(product[0].watchAge)).getFullYear() - new Date().getFullYear())} years)</li>
+                              <li>since {Math.abs(new Date(product[0].watchAge).getFullYear())} ({Math.abs(new Date(product[0].watchAge).getFullYear() - new Date().getFullYear())} years)</li>
                             </ul>
                           </li>
                           <li>
@@ -364,6 +335,12 @@ class ProductsPage extends React.Component {
                         </ul>
                       </div>
                     </div>
+
+
+
+                    {/* <div dangerouslySetInnerHTML={{ __html: product[0].description }} className='editor'></div> */}
+
+
                     <div class="row mt-40 mb-20">
                       <div class="col-md-12 mb-50">
                         <p class="fs-12 text-left wd-70">{product[0].description}</p>
