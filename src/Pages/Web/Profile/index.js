@@ -1,7 +1,9 @@
 import React from 'react';  
+import { Fragment } from 'react';
+import { removeUserSession, getToken, isAdmin } from '../../../Utils/Common';
 
 
-  class AuctionPage extends React.Component {
+  class ProfilePage extends React.Component {
 
     constructor(props)
     {
@@ -33,10 +35,30 @@ import React from 'react';
       });
     }
 
+    handleLogout = (e) =>{ 
+      e.preventDefault();
+      removeUserSession()
+      this.props.history.push("/");
+    };
+
+    handleRedirectToAdmin = (e) =>{ 
+      e.preventDefault();
+  
+      window.open(window.$admin_api+"/login/"+getToken(), '_blank');
+    };
+
     render() {
+      
+      const isLoggedUserAdmin = isAdmin();
+
       return ( 
-       <label>Auction</label>
+        <Fragment>
+        <label>Profile</label>
+
+        { isLoggedUserAdmin && <button onClick={this.handleRedirectToAdmin}>Administration</button>}
+        <button onClick={this.handleLogout}>Logout</button>
+       </Fragment>
       );
     }
   }
-export default AuctionPage  
+export default ProfilePage  

@@ -1,4 +1,4 @@
-import React, { useState } 	from "react"; //useEffect
+import React, { useState, Fragment } 	from "react"; //useEffect
 import { Route, Link  } 			from 'react-router-dom';  
 import { Modal, Button } 	from 'react-bootstrap';
 import axios 				from 'axios'
@@ -13,7 +13,7 @@ import "./assets/css/icons.min.css"
 import "./assets/css/plugins.css"
 // import "./assets/css/plugins.css"
 import "./assets/css/style.css"
-import { setUserSession,getToken,removeUserSession,isAdmin } from '../../Utils/Common';
+import { setUserSession, getToken, removeUserSession, isAdmin, getUser, timeSince } from '../../Utils/Common';
 
 
 const WebLayout = ({ children }) => {
@@ -29,11 +29,7 @@ const WebLayout = ({ children }) => {
 		e.preventDefault();
 		setRegisterShow(true)
 	};
-	const handleLogout = (e) =>{ 
-		e.preventDefault();
-		removeUserSession()
-		window.location.reload()
-	};
+
 	const [loginEmail, setLoginEmail] = useState("");
 	const [loginPassword, setLoginPassword] = useState("");
 	const [loginError, setLoginError] = useState(false);
@@ -135,6 +131,13 @@ const WebLayout = ({ children }) => {
     // this.state = { value: 'Hello World' };
 	const isLoggedIn = getToken();
 	const isLoggedUserAdmin = isAdmin();
+	const loggedUser = getUser();
+	const notiList = loggedUser && loggedUser.notiList.sort(function(a,b){
+					// Turn your strings into dates, and then subtract them
+					// to get a value that is either negative, positive, or zero.
+					return new Date(b.time) - new Date(a.time);
+				});
+	console.log(notiList)
 	return (                         
 	<>
     	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
@@ -153,25 +156,104 @@ const WebLayout = ({ children }) => {
 						<div className="main-menu">
 						<nav>
 							<ul>
-								<li><a href="/auction"> Auctions </a></li>
-								<li><a href="/sell"> Sell Now </a></li>
+								<li className={(children.props.match.path == "/") ? "menu-active" : ""}><a href="/"> Auctions </a></li>
+								<li className={(children.props.match.path == "/sell") ? "menu-active" : ""}><a href="/sell"> Sell Now </a></li>
 								{
 									isLoggedIn == null &&
 									<li onClick={handleRegisterShow}><a href="#"> Register </a></li>
 								}
 
+								{/* {
+									<li>
+										<div class="dropdown" style={{float: 'right'}}>
+											<button class="dropbtn">Right</button>
+											<div class="dropdown-content">
+											<a href="#">Link 1</a>
+											<a href="#">Link 2</a>
+											<a href="#">Link 3</a>
+											</div>
+										</div>
+									</li>
+								} */}
+
 								{
+									isLoggedIn != null &&
+									<li style={{cursor: 'pointer'}}>
+									
+									<div class="dropdown show">
+										<i className="fas fa-bell noti-icon" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+
+										<div class="dropdown-menu dropdown-menu-right" style={{translate: 'translateX(-50%) !important'}} aria-labelledby="dropdownMenuLink">
+											<span class="list-group-item">Notifications</span>
+
+											{
+												(loggedUser && notiList.length > 0) ?
+												( notiList.map((noti)=>(
+													<a class="dropdown-item" href="#">
+
+													<div class="container-noti row">
+														<div class="container__img col-3">
+														<img
+															src={noti.productImage}
+															alt="Product Image"
+														/>
+														</div>
+														<div class="container__text col-9">
+															<h6> <b>{noti.text}</b> </h6>
+															<h6>{noti.productFullname}</h6>
+															<p className="text-muted" style={{fontSize: '0.7rem'}}>{timeSince(new Date(noti.time))}</p>
+														</div>
+													</div>
+
+													</a>
+												)) ) :
+												(<a class="dropdown-item" href="#">
+
+												<div class="container-noti row">
+													<span>No new notifications!</span>
+												</div>
+
+											</a>)
+
+											}
+
+
+										</div>
+									
+
+									</div>
+
+								</li>
+								}
+								
+								{/* {
 									isLoggedUserAdmin &&
 									<li onClick={handleRedirectToAdmin}><Link> Administration </Link ></li>
-								}
+								} */}
 								
 								{ isLoggedIn == null ?
 								<li onClick={handleLoginShow}><a href="#" > Login </a></li>
 								:
-								<li onClick={handleLogout}><a href="#"> Logout </a></li>
+								// <li onClick={handleLogout}><a href="#"> Logout </a></li>
+								<li><a href="/profile"><i className="far fa-user noti-icon" ></i></a></li>
 								}
 								
 							</ul>
+
+							{/* <div className="same-style cart-wrap d-none d-lg-block">
+        <button className="icon-cart" onClick={e => handleClick(e)}>
+          <i className="pe-7s-shopbag" />
+          <span className="count-style">
+            {cartData && cartData.length ? cartData.length : 0}
+          </span>
+        </button>
+    
+        <MenuCart
+          cartData={cartData}
+          currency={currency}
+          deleteFromCart={deleteFromCart}
+        />
+      </div> */}
 						</nav>
 						</div>
 					</div>

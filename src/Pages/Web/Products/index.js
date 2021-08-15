@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios'
-import { getUser, calculateTimeLeft } from 'Utils/Common';
+import { getUser, calculateTimeLeft, timeSince } from 'Utils/Common';
 import { Button } from 'bootstrap';
 // import Axios from '../../../Utils/Common';
 
@@ -150,9 +150,10 @@ class ProductsPage extends React.Component {
 
     let errors = {};
     let bidAmount = this.state.BidAmount;
+    let lastBidAmount = (this.state.product[0].bidHistory.length > 0) ? (this.state.product[0].bidHistory[0].bidAmount) : (this.state.product[0].startingPrice)
     let isValid = true;
 
-    if( (bidAmount - this.state.product[0].bidHistory[0].bidAmount) < 50 ){
+    if( (bidAmount - lastBidAmount) < 50 ){
       errors["bidAmount"] = "Bid must be greater than or equal to 50!";
       isValid = false;
     }
@@ -192,7 +193,7 @@ class ProductsPage extends React.Component {
                     <ul class="carousel-indicators">
                       <li data-target="#demo" data-slide-to="0" class="active"></li>
                       <li data-target="#demo" data-slide-to="1"></li>
-                      <li data-target="#demo" data-slide-to="2"></li>
+                      {/* <li data-target="#demo" data-slide-to="2"></li> */}
                     </ul>
 
 
@@ -203,9 +204,9 @@ class ProductsPage extends React.Component {
                       <div class="carousel-item">
                         <img src={product[0].images[1]} alt="Slider2" className="product-detail-img" />
                       </div>
-                      <div class="carousel-item">
+                      {/* <div class="carousel-item">
                         <img src={product[0].images[1]} alt="Slider3" className="product-detail-img" />
-                      </div>
+                      </div> */}
                     </div>
 
 
@@ -401,7 +402,7 @@ class ProductsPage extends React.Component {
                                 </div>
                                 <div class="col-md-5">
                                   {/* <a class="blue" href="#">@{history.userId.userName}</a> */}
-                                  <p class="fs-12">13 hours ago</p>
+                                  <p class="fs-12">{timeSince(new Date(history.bidTime))}</p>
                                 </div>
                                 <div class="col-md-12">
                                   <hr></hr>
